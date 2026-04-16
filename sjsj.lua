@@ -1,7 +1,6 @@
 -- ============================================================
 --  PANELBLOX PREMIUM v3.0 -- Blox Fruits
---  GUI Premium with Blue Glow Theme
---  Features: ESP Skeleton + Dynamic Island (FPS + Username)
+--  GUI Premium with customizable colors (Blue Glow Edition)
 -- ============================================================
 
 -- [0] SERVICES
@@ -13,7 +12,6 @@ local TweenService      = game:GetService("TweenService")
 local TeleportService   = game:GetService("TeleportService")
 local LocalPlayer       = Players.LocalPlayer
 local HttpService       = game:GetService("HttpService")
-local CoreGui           = game:GetService("CoreGui")
 
 -- [1] PERSISTENT COLOR SYSTEM (BLUE GLOW THEME)
 local ColorPresets = {
@@ -123,158 +121,6 @@ local function ApplyColorChange()
     SaveColors()
 end
 
--- ============================================================
---  DYNAMIC ISLAND (FPS + Username)
--- ============================================================
-local dynamicIsland = Instance.new("Frame", CoreGui)
-dynamicIsland.Name = "PANELBLOX_DynamicIsland"
-dynamicIsland.Size = UDim2.new(0, 200, 0, 40)
-dynamicIsland.Position = UDim2.new(0.5, -100, 0, 10)
-dynamicIsland.BackgroundColor3 = Color3.fromRGB(10, 10, 25)
-dynamicIsland.BackgroundTransparency = 0.15
-dynamicIsland.ClipsDescendants = true
-corner(20, dynamicIsland)
-stroke(Color3.fromRGB(0, 150, 255), 1.5, dynamicIsland)
-
--- Glass blur effect (if supported)
-local blur = Instance.new("BlurEffect", game:GetService("Lighting"))
-blur.Size = 0
--- For dynamic island blur
-pcall(function()
-    local uiBlur = Instance.new("UIScreenBlur", dynamicIsland)
-    uiBlur.Enabled = true
-    uiBlur.Strength = 20
-end)
-
--- Avatar icon
-local avatarIcon = Instance.new("ImageLabel", dynamicIsland)
-avatarIcon.Size = UDim2.new(0, 32, 0, 32)
-avatarIcon.Position = UDim2.new(0, 4, 0.5, -16)
-avatarIcon.BackgroundTransparency = 1
-avatarIcon.Image = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size60x60)
-avatarIcon.ImageLabel = "rbxasset://textures/ui/GuiImagePlaceholder.png"
-corner(16, avatarIcon)
-local avatarStroke = stroke(Color3.fromRGB(0, 150, 255), 1.5, avatarIcon)
-
--- Username label
-local usernameLabel = Instance.new("TextLabel", dynamicIsland)
-usernameLabel.Size = UDim2.new(0, 80, 0, 18)
-usernameLabel.Position = UDim2.new(0, 42, 0, 4)
-usernameLabel.BackgroundTransparency = 1
-usernameLabel.Text = LocalPlayer.Name
-usernameLabel.Font = Enum.Font.GothamBold
-usernameLabel.TextSize = 12
-usernameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-usernameLabel.TextXAlignment = Enum.TextXAlignment.Left
-usernameLabel.TextTruncate = Enum.TextTruncate.AtEnd
-
--- FPS counter
-local fpsLabel = Instance.new("TextLabel", dynamicIsland)
-fpsLabel.Size = UDim2.new(0, 80, 0, 16)
-fpsLabel.Position = UDim2.new(0, 42, 0, 22)
-fpsLabel.BackgroundTransparency = 1
-fpsLabel.Text = "FPS: --"
-fpsLabel.Font = Enum.Font.Gotham
-fpsLabel.TextSize = 11
-fpsLabel.TextColor3 = Color3.fromRGB(0, 200, 255)
-fpsLabel.TextXAlignment = Enum.TextXAlignment.Left
-
--- Ping indicator (small dot)
-local pingDot = Instance.new("Frame", dynamicIsland)
-pingDot.Size = UDim2.new(0, 8, 0, 8)
-pingDot.Position = UDim2.new(1, -24, 0.5, -4)
-pingDot.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-corner(4, pingDot)
-
-local pingLabel = Instance.new("TextLabel", dynamicIsland)
-pingLabel.Size = UDim2.new(0, 30, 0, 16)
-pingLabel.Position = UDim2.new(1, -22, 0.5, -8)
-pingLabel.BackgroundTransparency = 1
-pingLabel.Text = "0ms"
-pingLabel.Font = Enum.Font.Gotham
-pingLabel.TextSize = 10
-pingLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-pingLabel.TextXAlignment = Enum.TextXAlignment.Right
-
--- FPS calculation
-local frameTimes = {}
-local lastFrameTime = tick()
-local function UpdateFPS()
-    local currentTime = tick()
-    local delta = currentTime - lastFrameTime
-    lastFrameTime = currentTime
-    table.insert(frameTimes, delta)
-    if #frameTimes > 60 then table.remove(frameTimes, 1) end
-    
-    local sum = 0
-    for _, t in ipairs(frameTimes) do sum = sum + t end
-    local avgDelta = sum / #frameTimes
-    local fps = math.floor(1 / avgDelta)
-    
-    fpsLabel.Text = "FPS: " .. fps
-    
-    -- Change color based on FPS
-    if fps >= 60 then
-        fpsLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
-    elseif fps >= 30 then
-        fpsLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-    else
-        fpsLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
-    end
-end
-
--- Ping update
-local function UpdatePing()
-    pcall(function()
-        local stats = game:GetService("Stats")
-        local ping = stats.Network:GetServerStatsPing()
-        if ping then
-            local pingMs = math.floor(ping / 1000)
-            pingLabel.Text = pingMs .. "ms"
-            if pingMs < 100 then
-                pingDot.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-                pingLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
-            elseif pingMs < 200 then
-                pingDot.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
-                pingLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-            else
-                pingDot.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-                pingLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
-            end
-        end
-    end)
-end
-
--- Animated glow border for dynamic island
-task.spawn(function()
-    local hue = 0
-    while dynamicIsland and dynamicIsland.Parent do
-        hue = (hue + 0.5) % 360
-        local borderColor = Color3.fromHSV(hue / 360, 1, 0.8)
-        pcall(function()
-            if dynamicIsland:FindFirstChild("UIStroke") then
-                dynamicIsland.UIStroke.Color = borderColor
-            end
-        end)
-        task.wait(0.05)
-    end
-end)
-
--- Update avatar when it loads
-LocalPlayer.CharacterAdded:Connect(function()
-    task.wait(1)
-    avatarIcon.Image = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size60x60)
-end)
-
--- Update loops
-RunService.Heartbeat:Connect(UpdateFPS)
-task.spawn(function()
-    while true do
-        task.wait(2)
-        UpdatePing()
-    end
-end)
-
 -- [3] INTRO SCREEN MATRIX
 local function RunIntro()
     local introGui = Instance.new("ScreenGui")
@@ -283,7 +129,7 @@ local function RunIntro()
     local Subtitle = Instance.new("TextLabel")
 
     introGui.Name = "PANELBLOXIntro"
-    introGui.Parent = CoreGui
+    introGui.Parent = game:GetService("CoreGui")
     introGui.IgnoreGuiInset = true
 
     Blackout.Size = UDim2.new(1, 0, 1, 0)
@@ -395,7 +241,6 @@ local v4Connection        = nil
 local ESPEnabled          = false
 local ESPObjects          = {}
 local ESPDrawingEnabled   = false
-local ESPSkeletonEnabled  = false  -- NEW: ESP Skeleton
 local FullBrightEnabled   = false
 -- Movement
 local iJ                  = false
@@ -425,119 +270,7 @@ local Net            = ReplicatedStorage:WaitForChild("Modules"):WaitForChild("N
 local RegisterHit    = Net["RE/RegisterHit"]
 local RegisterAttack = Net["RE/RegisterAttack"]
 
--- ============================================================
---  ESP SKELETON SYSTEM (Drawing API)
--- ============================================================
-local skeletonConnections = {}
-local skeletonPoints = {}
-
--- Bone connections for skeleton
-local boneConnections = {
-    -- Head to Shoulders
-    {start = "Head", endPart = "UpperTorso", offsetStart = Vector3.new(0, 0.3, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    -- Shoulders to Arms
-    {start = "UpperTorso", endPart = "LeftUpperArm", offsetStart = Vector3.new(-0.5, 0, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    {start = "UpperTorso", endPart = "RightUpperArm", offsetStart = Vector3.new(0.5, 0, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    -- Upper Arms to Lower Arms
-    {start = "LeftUpperArm", endPart = "LeftLowerArm", offsetStart = Vector3.new(0, -0.5, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    {start = "RightUpperArm", endPart = "RightLowerArm", offsetStart = Vector3.new(0, -0.5, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    -- Lower Arms to Hands
-    {start = "LeftLowerArm", endPart = "LeftHand", offsetStart = Vector3.new(0, -0.5, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    {start = "RightLowerArm", endPart = "RightHand", offsetStart = Vector3.new(0, -0.5, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    -- UpperTorso to LowerTorso (Spine)
-    {start = "UpperTorso", endPart = "LowerTorso", offsetStart = Vector3.new(0, -0.8, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    -- LowerTorso to Legs
-    {start = "LowerTorso", endPart = "LeftUpperLeg", offsetStart = Vector3.new(-0.3, -0.5, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    {start = "LowerTorso", endPart = "RightUpperLeg", offsetStart = Vector3.new(0.3, -0.5, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    -- Upper Legs to Lower Legs
-    {start = "LeftUpperLeg", endPart = "LeftLowerLeg", offsetStart = Vector3.new(0, -0.6, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    {start = "RightUpperLeg", endPart = "RightLowerLeg", offsetStart = Vector3.new(0, -0.6, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    -- Lower Legs to Feet
-    {start = "LeftLowerLeg", endPart = "LeftFoot", offsetStart = Vector3.new(0, -0.5, 0), offsetEnd = Vector3.new(0, 0, 0)},
-    {start = "RightLowerLeg", endPart = "RightFoot", offsetStart = Vector3.new(0, -0.5, 0), offsetEnd = Vector3.new(0, 0, 0)},
-}
-
-local function GetPartPosition(character, partName, offset)
-    if not character then return nil end
-    local part = character:FindFirstChild(partName)
-    if part then
-        return part.Position + offset
-    end
-    return nil
-end
-
-local function CreateSkeletonForPlayer(plr)
-    if not plr or plr == LocalPlayer then return end
-    
-    local lines = {}
-    for i = 1, #boneConnections do
-        local line = Drawing.new("Line")
-        line.Visible = false
-        line.Color = Color3.fromRGB(0, 150, 255)
-        line.Thickness = 2
-        line.Transparency = 0.7
-        table.insert(lines, line)
-    end
-    
-    local connection
-    connection = RunService.RenderStepped:Connect(function()
-        if not ESPSkeletonEnabled or not plr or not plr.Parent or not plr.Character then
-            for _, line in ipairs(lines) do
-                line.Visible = false
-            end
-            return
-        end
-        
-        local character = plr.Character
-        local camera = workspace.CurrentCamera
-        
-        for idx, bone in ipairs(boneConnections) do
-            local startPos = GetPartPosition(character, bone.start, bone.offsetStart)
-            local endPos = GetPartPosition(character, bone.endPart, bone.offsetEnd)
-            
-            if startPos and endPos then
-                local startVec, onScreen1 = camera:WorldToViewportPoint(startPos)
-                local endVec, onScreen2 = camera:WorldToViewportPoint(endPos)
-                
-                if onScreen1 and onScreen2 then
-                    lines[idx].From = Vector2.new(startVec.X, startVec.Y)
-                    lines[idx].To = Vector2.new(endVec.X, endVec.Y)
-                    lines[idx].Visible = true
-                    lines[idx].Color = C.accent
-                else
-                    lines[idx].Visible = false
-                end
-            else
-                lines[idx].Visible = false
-            end
-        end
-    end)
-    
-    table.insert(skeletonConnections, {plr = plr, connection = connection, lines = lines})
-end
-
-local function ClearAllSkeletons()
-    for _, data in ipairs(skeletonConnections) do
-        if data.connection then data.connection:Disconnect() end
-        for _, line in ipairs(data.lines) do
-            pcall(function() line:Remove() end)
-        end
-    end
-    skeletonConnections = {}
-end
-
-local function UpdateAllSkeletons()
-    ClearAllSkeletons()
-    if not ESPSkeletonEnabled then return end
-    
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer then
-            CreateSkeletonForPlayer(plr)
-        end
-    end
-end
-
--- [6] ESP LOGIC (Billboard)
+-- [6] ESP LOGIC
 local function CreateESP(target)
     if not target:FindFirstChild("Head") then return end
     local billboard = Instance.new("BillboardGui")
@@ -586,7 +319,7 @@ local function FindNearestEnemy()
         game:GetService("GuiService"):GetScreenResolution().Y / 2
     )
     local nearest = nil
-    for _, v in pairs(Players:GetPlayers()) do
+    for _, v in ipairs(Players:GetPlayers()) do
         if v ~= LocalPlayer then
             local char = v.Character
             if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0 then
@@ -837,7 +570,7 @@ creditLabel.TextSize = 12
 creditLabel.TextColor3 = Color3.fromRGB(0, 200, 255)
 creditLabel.TextXAlignment = Enum.TextXAlignment.Center
 creditLabel.TextYAlignment = Enum.TextYAlignment.Center
-
+-- Glow effect on text
 task.spawn(function()
     local glow = true
     while creditLabel and creditLabel.Parent do
@@ -1991,17 +1724,6 @@ addToggleRow("ESP Drawing", "With distance in meters (Drawing API)", visualPage,
     ESPDrawingEnabled = on
 end)
 
--- NEW: ESP Skeleton toggle
-addToggleRow("ESP Skeleton", "Shows bone structure of players (Drawing API)", visualPage, 4, function(on)
-    ESPSkeletonEnabled = on
-    if on then
-        UpdateAllSkeletons()
-    else
-        ClearAllSkeletons()
-    end
-end)
-
--- ESP Drawing system
 local drawingESPConnections = {}
 local function CreateDrawingESP(plr)
     local NameTag = Drawing.new("Text")
@@ -2035,33 +1757,13 @@ end
 for _, v in pairs(Players:GetPlayers()) do
     if v ~= LocalPlayer then CreateDrawingESP(v) end
 end
-Players.PlayerAdded:Connect(function(plr) 
-    CreateDrawingESP(plr)
-    if ESPSkeletonEnabled then
-        task.wait(0.5)
-        CreateSkeletonForPlayer(plr)
-    end
-end)
+Players.PlayerAdded:Connect(function(plr) CreateDrawingESP(plr) end)
 
-Players.PlayerRemoving:Connect(function(plr)
-    for i, data in ipairs(skeletonConnections) do
-        if data.plr == plr then
-            if data.connection then data.connection:Disconnect() end
-            for _, line in ipairs(data.lines) do
-                pcall(function() line:Remove() end)
-            end
-            table.remove(skeletonConnections, i)
-            break
-        end
-    end
-end)
-
--- ESP refresh loop
 task.spawn(function()
     while true do task.wait(5); if ESPEnabled then UpdateESP() end end
 end)
 
-addSectionTitle("Performance", visualPage, 5)
+addSectionTitle("Performance", visualPage, 4)
 
 local fpsBtn = Instance.new("TextButton", visualPage)
 fpsBtn.Size = UDim2.new(1, 0, 0, 48); fpsBtn.BackgroundColor3 = C.item; fpsBtn.Text = ""
@@ -2691,8 +2393,7 @@ minBtn.MouseButton1Click:Connect(function()
 end)
 
 closeBtn.MouseButton1Click:Connect(function()
-    ESPEnabled = false; ClearESP(); ESPDrawingEnabled = false; ESPSkeletonEnabled = false
-    ClearAllSkeletons()
+    ESPEnabled = false; ClearESP(); ESPDrawingEnabled = false
     if workspace:FindFirstChild("PANELBLOXWater") then workspace.PANELBLOXWater:Destroy() end
     tween(mainFrame, 0.15, {BackgroundTransparency = 1})
     task.wait(0.18); screenGui:Destroy()
