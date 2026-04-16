@@ -1,5 +1,5 @@
 -- ============================================================
---  PANELBLOX PREMIUM v3.0 -- Blox Fruitss
+--  PANELBLOX PREMIUM v3.0 -- Blox Fruits
 --  GUI Premium with customizable colors (Blue Glow Edition)
 -- ============================================================
 
@@ -207,7 +207,7 @@ end)
 -- [5] STATE VARIABLES
 -- Combat
 local FastAttackEnabled   = false
-local FastAttackRange     = 500000
+local FastAttackRange     = 500000000
 local FastAttackConnection = nil
 local AimlockEnabled      = false
 local AimlockVerticalOffset = 0
