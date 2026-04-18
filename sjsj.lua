@@ -1130,7 +1130,7 @@ local discordRow = Instance.new("TextButton", homePage)
 discordRow.Size = UDim2.new(1, 0, 0, 36); discordRow.BackgroundColor3 = Color3.fromRGB(20, 20, 50)
 discordRow.Text = ""; discordRow.LayoutOrder = 3; corner(8, discordRow)
 stroke(Color3.fromRGB(60, 65, 140), 1, discordRow)
-label({Text = "discord.gg/QvpGRwDdpZ", Font = Enum.Font.GothamSemibold, TextSize = 13,
+label({Text = "+6283849124100", Font = Enum.Font.GothamSemibold, TextSize = 13,
     TextColor3 = C.accent2, Size = UDim2.new(1,0,1,0), TextXAlignment = Enum.TextXAlignment.Center}, discordRow)
 discordRow.MouseEnter:Connect(function() tween(discordRow, 0.1, {BackgroundColor3 = Color3.fromRGB(25,25,65)}) end)
 discordRow.MouseLeave:Connect(function() tween(discordRow, 0.1, {BackgroundColor3 = Color3.fromRGB(20,20,50)}) end)
