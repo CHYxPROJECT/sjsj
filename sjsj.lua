@@ -1085,7 +1085,7 @@ corner(99, iconWrap); stroke(C.accent, 2, iconWrap)
 
 local iconImage = Instance.new("ImageLabel", iconWrap)
 iconImage.Size = UDim2.new(1, 0, 1, 0); iconImage.BackgroundTransparency = 1
-iconImage.Image = "rbxassetid://127186589815047"; iconImage.ScaleType = Enum.ScaleType.Fit; iconImage.ZIndex = 10
+iconImage.Image = "rbxassetid://73809607992968"; iconImage.ScaleType = Enum.ScaleType.Fit; iconImage.ZIndex = 10
 
 local bannerTitle = label({Text = "PANELBLOX PREMIUM", Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = C.accent,
     Size = UDim2.new(1, -76, 0, 22), Position = UDim2.new(0, 70, 0, 12),
