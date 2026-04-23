@@ -1,7 +1,6 @@
 -- ============================================================
 --  PANELBLOX PREMIUM v3.0 -- Blox Fruits
 --  GUI Premium with customizable colors (Blue Glow Edition)
---  ADDED: Skeleton ESP | Auto Bounty Hunt | Save Config
 -- ============================================================
 
 -- [0] SERVICES
@@ -13,7 +12,6 @@ local TweenService      = game:GetService("TweenService")
 local TeleportService   = game:GetService("TeleportService")
 local LocalPlayer       = Players.LocalPlayer
 local HttpService       = game:GetService("HttpService")
-local Lighting          = game:GetService("Lighting")
 
 -- [1] PERSISTENT COLOR SYSTEM (BLUE GLOW THEME)
 local ColorPresets = {
@@ -41,155 +39,6 @@ end
 
 local SavedPrimary   = DEFAULT_PRIMARY
 local SavedSecondary = DEFAULT_SECONDARY
-
--- [NEW] CONFIG SYSTEM
-local ConfigData = {
-    -- Combat
-    FastAttackEnabled = false,
-    FastAttackRange = 5000,
-    TargetMode = "NPCsPlayers",
-    AimlockEnabled = false,
-    AimlockVerticalOffset = 0,
-    -- Player Lock
-    TeleportEnabled = false,
-    InstaTeleportEnabled = false,
-    SpectateEnabled = false,
-    TweenSpeedVal = 350,
-    YOffset = 0,
-    OrbitEnabled = false,
-    OrbitDistance = 5,
-    OrbitHeight = 2,
-    AutoEscapeEnabled = false,
-    AutoEscapeThreshold = 30,
-    -- Extra
-    FruitAttackKitsune = false,
-    FruitAttackTRex = false,
-    AutoAwakening = false,
-    -- Visual
-    ESPEnabled = false,
-    ESPDrawingEnabled = false,
-    ESP_SkeletonEnabled = false,
-    FullBrightEnabled = false,
-    -- Movement
-    iJ = false,
-    ncl = false,
-    walkWaterEnabled = false,
-    sVal = 16,
-    sAct = false,
-    DashBoostEnabled = false,
-    DashBoostMultiplier = 2.0,
-    SuperJumpEnabled = false,
-    SuperJumpPower = 100,
-    SuperJumpCFrameMode = false,
-    -- Auto Bounty Hunt
-    AutoBountyEnabled = false,
-    AutoBountyMinLevel = 2000,
-    AutoBountyTargets = {},
-}
-
-local function SaveAllConfig()
-    pcall(function()
-        if not isfolder("PANELBLOX") then makefolder("PANELBLOX") end
-        local configToSave = {
-            colors = {
-                primary = SavedPrimary,
-                secondary = SavedSecondary,
-            },
-            settings = {
-                FastAttackEnabled = FastAttackEnabled,
-                FastAttackRange = FastAttackRange,
-                TargetMode = TargetMode,
-                AimlockEnabled = AimlockEnabled,
-                AimlockVerticalOffset = AimlockVerticalOffset,
-                TeleportEnabled = TeleportEnabled,
-                InstaTeleportEnabled = InstaTeleportEnabled,
-                SpectateEnabled = SpectateEnabled,
-                TweenSpeedVal = TweenSpeedVal,
-                YOffset = YOffset,
-                OrbitEnabled = OrbitEnabled,
-                OrbitDistance = OrbitDistance,
-                OrbitHeight = OrbitHeight,
-                AutoEscapeEnabled = AutoEscapeEnabled,
-                AutoEscapeThreshold = AutoEscapeThreshold,
-                FruitAttackKitsune = FruitAttackKitsune,
-                FruitAttackTRex = FruitAttackTRex,
-                AutoAwakening = AutoAwakening,
-                ESPEnabled = ESPEnabled,
-                ESPDrawingEnabled = ESPDrawingEnabled,
-                ESP_SkeletonEnabled = ESP_SkeletonEnabled,
-                FullBrightEnabled = FullBrightEnabled,
-                iJ = iJ,
-                ncl = ncl,
-                walkWaterEnabled = walkWaterEnabled,
-                sVal = sVal,
-                sAct = sAct,
-                DashBoostEnabled = DashBoostEnabled,
-                DashBoostMultiplier = DashBoostMultiplier,
-                SuperJumpEnabled = SuperJumpEnabled,
-                SuperJumpPower = SuperJumpPower,
-                SuperJumpCFrameMode = SuperJumpCFrameMode,
-                AutoBountyEnabled = AutoBountyEnabled,
-                AutoBountyMinLevel = AutoBountyMinLevel,
-            }
-        }
-        writefile("PANELBLOX/config.json", HttpService:JSONEncode(configToSave))
-        addNotification("Config", "Settings saved successfully", C.green)
-    end)
-end
-
-local function LoadAllConfig()
-    pcall(function()
-        if not isfile("PANELBLOX/config.json") then return end
-        local data = HttpService:JSONDecode(readfile("PANELBLOX/config.json"))
-        
-        -- Load colors
-        if data.colors then
-            if data.colors.primary then SavedPrimary = data.colors.primary end
-            if data.colors.secondary then SavedSecondary = data.colors.secondary end
-            ApplyColorChange()
-        end
-        
-        -- Load settings
-        if data.settings then
-            FastAttackEnabled = data.settings.FastAttackEnabled or false
-            FastAttackRange = data.settings.FastAttackRange or 5000
-            TargetMode = data.settings.TargetMode or "NPCsPlayers"
-            AimlockEnabled = data.settings.AimlockEnabled or false
-            AimlockVerticalOffset = data.settings.AimlockVerticalOffset or 0
-            TeleportEnabled = data.settings.TeleportEnabled or false
-            InstaTeleportEnabled = data.settings.InstaTeleportEnabled or false
-            SpectateEnabled = data.settings.SpectateEnabled or false
-            TweenSpeedVal = data.settings.TweenSpeedVal or 350
-            YOffset = data.settings.YOffset or 0
-            OrbitEnabled = data.settings.OrbitEnabled or false
-            OrbitDistance = data.settings.OrbitDistance or 5
-            OrbitHeight = data.settings.OrbitHeight or 2
-            AutoEscapeEnabled = data.settings.AutoEscapeEnabled or false
-            AutoEscapeThreshold = data.settings.AutoEscapeThreshold or 30
-            FruitAttackKitsune = data.settings.FruitAttackKitsune or false
-            FruitAttackTRex = data.settings.FruitAttackTRex or false
-            AutoAwakening = data.settings.AutoAwakening or false
-            ESPEnabled = data.settings.ESPEnabled or false
-            ESPDrawingEnabled = data.settings.ESPDrawingEnabled or false
-            ESP_SkeletonEnabled = data.settings.ESP_SkeletonEnabled or false
-            FullBrightEnabled = data.settings.FullBrightEnabled or false
-            iJ = data.settings.iJ or false
-            ncl = data.settings.ncl or false
-            walkWaterEnabled = data.settings.walkWaterEnabled or false
-            sVal = data.settings.sVal or 16
-            sAct = data.settings.sAct or false
-            DashBoostEnabled = data.settings.DashBoostEnabled or false
-            DashBoostMultiplier = data.settings.DashBoostMultiplier or 2.0
-            SuperJumpEnabled = data.settings.SuperJumpEnabled or false
-            SuperJumpPower = data.settings.SuperJumpPower or 100
-            SuperJumpCFrameMode = data.settings.SuperJumpCFrameMode or false
-            AutoBountyEnabled = data.settings.AutoBountyEnabled or false
-            AutoBountyMinLevel = data.settings.AutoBountyMinLevel or 2000
-        end
-        
-        addNotification("Config", "Settings loaded successfully", C.accent)
-    end)
-end
 
 pcall(function()
     if not isfolder("PANELBLOX") then makefolder("PANELBLOX") end
@@ -392,11 +241,8 @@ local v4Connection        = nil
 local ESPEnabled          = false
 local ESPObjects          = {}
 local ESPDrawingEnabled   = false
--- [NEW] SKELETON ESP
-local ESP_SkeletonEnabled = false
-local SkeletonObjects     = {}
-local SkeletonLines       = {}
--- FullBright
+local ESP_SkeletonEnabled = false  
+local SkeletonObjects     = {}         
 local FullBrightEnabled   = false
 -- Movement
 local iJ                  = false
@@ -421,264 +267,10 @@ local aimlockGui          = nil
 local u4                  = false
 local u19                 = nil
 
--- [NEW] AUTO BOUNTY HUNT
-local AutoBountyEnabled   = false
-local AutoBountyMinLevel  = 2000
-local AutoBountyTargets   = {}
-local AutoBountyConnection = nil
-local AutoBountyActive    = false
-local AutoBountyCurrentTarget = nil
-
 -- Net
 local Net            = ReplicatedStorage:WaitForChild("Modules"):WaitForChild("Net")
 local RegisterHit    = Net["RE/RegisterHit"]
 local RegisterAttack = Net["RE/RegisterAttack"]
-
--- [NEW] SKELETON ESP FUNCTIONS
-local function GetJoints(char)
-    local joints = {}
-    local parts = {
-        Head = "Head",
-        Neck = "UpperTorso",
-        LeftShoulder = "LeftUpperArm", LeftElbow = "LeftLowerArm", LeftWrist = "LeftHand",
-        RightShoulder = "RightUpperArm", RightElbow = "RightLowerArm", RightWrist = "RightHand",
-        Hips = "LowerTorso",
-        LeftHip = "LeftUpperLeg", LeftKnee = "LeftLowerLeg", LeftAnkle = "LeftFoot",
-        RightHip = "RightUpperLeg", RightKnee = "RightLowerLeg", RightAnkle = "RightFoot",
-    }
-    
-    for name, partName in pairs(parts) do
-        local part = char:FindFirstChild(partName)
-        if part and part:IsA("BasePart") then
-            joints[name] = part
-        end
-    end
-    return joints
-end
-
-local function CreateSkeletonForPlayer(plr)
-    if not plr or not plr.Character then return end
-    local char = plr.Character
-    local joints = GetJoints(char)
-    
-    local skeletonGroup = Instance.new("Folder")
-    skeletonGroup.Name = "SkeletonESP_" .. plr.Name
-    skeletonGroup.Parent = char
-    
-    local function createLine(partA, partB, color)
-        if not partA or not partB then return nil end
-        local line = Instance.new("Part")
-        line.Name = "SkeletonLine"
-        line.Size = Vector3.new(0.05, 0.05, 0.05)
-        line.Anchored = true
-        line.CanCollide = false
-        line.Transparency = 0.3
-        line.Material = Enum.Material.Neon
-        line.BrickColor = BrickColor.new(color)
-        line.Parent = skeletonGroup
-        
-        local attachmentA = Instance.new("Attachment", partA)
-        local attachmentB = Instance.new("Attachment", partB)
-        local lineConstraint = Instance.new("LineForce", line)
-        lineConstraint.Attachment0 = attachmentA
-        lineConstraint.Attachment1 = attachmentB
-        lineConstraint.Visible = true
-        
-        return {line = line, attA = attachmentA, attB = attachmentB, constraint = lineConstraint}
-    end
-    
-    local lines = {}
-    -- Head to Neck
-    if joints.Head and joints.Neck then
-        table.insert(lines, createLine(joints.Head, joints.Neck, "Bright blue"))
-    end
-    -- Neck to Hips
-    if joints.Neck and joints.Hips then
-        table.insert(lines, createLine(joints.Neck, joints.Hips, "Bright blue"))
-    end
-    -- Left arm
-    if joints.LeftShoulder and joints.LeftElbow then
-        table.insert(lines, createLine(joints.LeftShoulder, joints.LeftElbow, "Bright blue"))
-    end
-    if joints.LeftElbow and joints.LeftWrist then
-        table.insert(lines, createLine(joints.LeftElbow, joints.LeftWrist, "Bright blue"))
-    end
-    -- Right arm
-    if joints.RightShoulder and joints.RightElbow then
-        table.insert(lines, createLine(joints.RightShoulder, joints.RightElbow, "Bright blue"))
-    end
-    if joints.RightElbow and joints.RightWrist then
-        table.insert(lines, createLine(joints.RightElbow, joints.RightWrist, "Bright blue"))
-    end
-    -- Left leg
-    if joints.Hips and joints.LeftHip then
-        table.insert(lines, createLine(joints.Hips, joints.LeftHip, "Bright blue"))
-    end
-    if joints.LeftHip and joints.LeftKnee then
-        table.insert(lines, createLine(joints.LeftHip, joints.LeftKnee, "Bright blue"))
-    end
-    if joints.LeftKnee and joints.LeftAnkle then
-        table.insert(lines, createLine(joints.LeftKnee, joints.LeftAnkle, "Bright blue"))
-    end
-    -- Right leg
-    if joints.Hips and joints.RightHip then
-        table.insert(lines, createLine(joints.Hips, joints.RightHip, "Bright blue"))
-    end
-    if joints.RightHip and joints.RightKnee then
-        table.insert(lines, createLine(joints.RightHip, joints.RightKnee, "Bright blue"))
-    end
-    if joints.RightKnee and joints.RightAnkle then
-        table.insert(lines, createLine(joints.RightKnee, joints.RightAnkle, "Bright blue"))
-    end
-    
-    table.insert(SkeletonObjects, skeletonGroup)
-    for _, lineData in ipairs(lines) do
-        table.insert(SkeletonLines, lineData)
-    end
-end
-
-local function ClearSkeletonESP()
-    for _, obj in pairs(SkeletonObjects) do
-        pcall(function() obj:Destroy() end)
-    end
-    for _, lineData in pairs(SkeletonLines) do
-        pcall(function() 
-            if lineData.line then lineData.line:Destroy() end
-            if lineData.attA then lineData.attA:Destroy() end
-            if lineData.attB then lineData.attB:Destroy() end
-            if lineData.constraint then lineData.constraint:Destroy() end
-        end)
-    end
-    SkeletonObjects = {}
-    SkeletonLines = {}
-end
-
-local function UpdateSkeletonESP()
-    ClearSkeletonESP()
-    if not ESP_SkeletonEnabled then return end
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character then
-            CreateSkeletonForPlayer(p)
-        end
-    end
-end
-
--- [NEW] AUTO BOUNTY HUNT FUNCTIONS
-local function GetPlayerLevel(player)
-    pcall(function()
-        local stats = player:FindFirstChild("Data") and player.Data:FindFirstChild("Level")
-        if stats then
-            return stats.Value
-        end
-    end)
-    return 0
-end
-
-local function GetBountyTargets()
-    local targets = {}
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character then
-            local level = GetPlayerLevel(p)
-            if level >= AutoBountyMinLevel then
-                table.insert(targets, p)
-            end
-        end
-    end
-    return targets
-end
-
-local function TeleportToTarget(target)
-    if not target or not target.Character then return false end
-    pcall(function()
-        local hrp = target.Character:FindFirstChild("HumanoidRootPart")
-        if hrp and LocalPlayer.Character then
-            LocalPlayer.Character:SetPrimaryPartCFrame(hrp.CFrame * CFrame.new(0, 2, 0))
-            return true
-        end
-    end)
-    return false
-end
-
-local function AttackTarget(target)
-    pcall(function()
-        if not target or not target.Character then return end
-        local head = target.Character:FindFirstChild("Head")
-        if head then
-            RegisterAttack:FireServer(0)
-            RegisterHit:FireServer(head, {target.Character, head})
-        end
-    end)
-end
-
-local function StartAutoBounty()
-    if AutoBountyConnection then AutoBountyConnection:Disconnect() end
-    
-    AutoBountyConnection = RunService.Heartbeat:Connect(function()
-        if not AutoBountyEnabled then return end
-        
-        pcall(function()
-            local myChar = LocalPlayer.Character
-            local myHRP = myChar and myChar:FindFirstChild("HumanoidRootPart")
-            local myHum = myChar and myChar:FindFirstChild("Humanoid")
-            if not myHRP or not myHum then return end
-            
-            -- Auto Escape logic when health low
-            local hpPercent = (myHum.Health / myHum.MaxHealth) * 100
-            if hpPercent <= AutoEscapeThreshold and AutoEscapeEnabled then
-                local escapePos = myHRP.Position + Vector3.new(0, 300, 0)
-                myHRP.CFrame = CFrame.new(escapePos)
-                return
-            end
-            
-            -- Refresh target list every 30 seconds
-            if tick() % 30 < 0.1 then
-                AutoBountyTargets = GetBountyTargets()
-            end
-            
-            -- Find nearest valid target
-            local nearestTarget = nil
-            local nearestDist = math.huge
-            
-            for _, target in pairs(AutoBountyTargets) do
-                if target and target.Character then
-                    local targetHRP = target.Character:FindFirstChild("HumanoidRootPart")
-                    local targetHum = target.Character:FindFirstChild("Humanoid")
-                    if targetHRP and targetHum and targetHum.Health > 0 then
-                        local dist = (myHRP.Position - targetHRP.Position).Magnitude
-                        if dist < nearestDist then
-                            nearestDist = dist
-                            nearestTarget = target
-                        end
-                    end
-                end
-            end
-            
-            if nearestTarget then
-                AutoBountyCurrentTarget = nearestTarget
-                local targetHRP = nearestTarget.Character.HumanoidRootPart
-                local dist = (myHRP.Position - targetHRP.Position).Magnitude
-                
-                -- Instant teleport to target if too far or if InstaTeleport enabled
-                if dist > 30 or InstaTeleportEnabled then
-                    TeleportToTarget(nearestTarget)
-                end
-                
-                -- Attack if in range
-                if dist <= FastAttackRange then
-                    AttackTarget(nearestTarget)
-                end
-            end
-        end)
-    end)
-end
-
-local function StopAutoBounty()
-    if AutoBountyConnection then
-        AutoBountyConnection:Disconnect()
-        AutoBountyConnection = nil
-    end
-    AutoBountyCurrentTarget = nil
-end
 
 -- [6] ESP LOGIC
 local function CreateESP(target)
@@ -1441,7 +1033,7 @@ local function addDropdownRow(titleText, options, parent, order, callback)
 end
 
 -- ============================================================
---  PAGES & NAV BUTTONS (9 tabs - added Bounty)
+--  PAGES & NAV BUTTONS (8 tabs)
 -- ============================================================
 local homePage     = createPage("Home")
 local combatPage   = createPage("Combat")
@@ -1450,7 +1042,6 @@ local extraPage    = createPage("ExtraFunctions")
 local visualPage   = createPage("Visual")
 local movePage     = createPage("Movement")
 local tpPage       = createPage("Teleport")
-local bountyPage   = createPage("BountyHunt")
 local settingsPage = createPage("Settings")
 
 createNavBtn("Home",           "  Home")
@@ -1460,7 +1051,6 @@ createNavBtn("ExtraFunctions", "  Extra")
 createNavBtn("Visual",         "  Visual")
 createNavBtn("Movement",       "  Movement")
 createNavBtn("Teleport",       "  Teleport")
-createNavBtn("BountyHunt",     "  Bounty Hunt")
 createNavBtn("Settings",       "  Settings")
 
 -- ============================================================
@@ -2124,7 +1714,7 @@ addButtonRow("Apply Showcase", extraPage, 11, function()
 end)
 
 -- ============================================================
---  VISUAL PAGE (with Skeleton ESP)
+--  VISUAL PAGE
 -- ============================================================
 addSectionTitle("ESP", visualPage, 1)
 
@@ -2134,16 +1724,6 @@ end)
 
 addToggleRow("ESP Drawing", "With distance in meters (Drawing API)", visualPage, 3, function(on)
     ESPDrawingEnabled = on
-end)
-
--- [NEW] Skeleton ESP Toggle
-addToggleRow("Skeleton ESP", "Shows player skeleton (Neon lines)", visualPage, 3.5, function(on)
-    ESP_SkeletonEnabled = on
-    if on then
-        UpdateSkeletonESP()
-    else
-        ClearSkeletonESP()
-    end
 end)
 
 local drawingESPConnections = {}
@@ -2182,11 +1762,7 @@ end
 Players.PlayerAdded:Connect(function(plr) CreateDrawingESP(plr) end)
 
 task.spawn(function()
-    while true do 
-        task.wait(5)
-        if ESPEnabled then UpdateESP() end
-        if ESP_SkeletonEnabled then UpdateSkeletonESP() end
-    end
+    while true do task.wait(5); if ESPEnabled then UpdateESP() end end
 end)
 
 addSectionTitle("Performance", visualPage, 4)
@@ -2600,76 +2176,7 @@ addTpButton("Castle", "-5085, 316, -3156", Color3.fromRGB(123, 136, 255), tpPage
 addTpButton("Mansion", "-12463, 375, -7523", Color3.fromRGB(255, 170, 68), tpPage, 4, function() doTP(-12463, 375, -7523) end)
 
 -- ============================================================
---  BOUNTY HUNT PAGE (NEW)
--- ============================================================
-addSectionTitle("Auto Bounty Hunt", bountyPage, 1)
-
-addToggleRow("Auto Bounty Hunt", "Auto TP + Attack players level 2000+", bountyPage, 2, function(on)
-    AutoBountyEnabled = on
-    if on then
-        StartAutoBounty()
-        addNotification("Bounty Hunt", "Auto Bounty started - Target: Level " .. AutoBountyMinLevel .. "+", C.green)
-    else
-        StopAutoBounty()
-        addNotification("Bounty Hunt", "Auto Bounty stopped", C.red)
-    end
-end)
-
-addSliderRow("Min Player Level", 1000, 2500, 2000, bountyPage, 3, function(val)
-    AutoBountyMinLevel = val
-    if AutoBountyEnabled then
-        addNotification("Bounty Hunt", "Min level changed to " .. val, C.accent)
-    end
-end)
-
-addSectionTitle("Bounty Stats", bountyPage, 4)
-
-local bountyStatusFrame = Instance.new("Frame", bountyPage)
-bountyStatusFrame.Size = UDim2.new(1, 0, 0, 80)
-bountyStatusFrame.BackgroundColor3 = C.item
-bountyStatusFrame.LayoutOrder = 5
-corner(8, bountyStatusFrame)
-stroke(C.border, 1, bountyStatusFrame)
-trackTheme(bountyStatusFrame, "BackgroundColor3", "item")
-
-local currentTargetLabel = label({Text = "Current Target: None", Font = Enum.Font.GothamSemibold, TextSize = 12,
-    TextColor3 = C.text, Size = UDim2.new(1, -16, 0, 20), Position = UDim2.new(0, 8, 0, 8)}, bountyStatusFrame)
-trackTheme(currentTargetLabel, "TextColor3", "text")
-
-local targetsCountLabel = label({Text = "Available Targets: 0", Font = Enum.Font.Gotham, TextSize = 11,
-    TextColor3 = C.sub, Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 8, 0, 32)}, bountyStatusFrame)
-trackTheme(targetsCountLabel, "TextColor3", "sub")
-
-local bountyStatusDot = Instance.new("Frame", bountyStatusFrame)
-bountyStatusDot.Size = UDim2.new(0, 8, 0, 8)
-bountyStatusDot.Position = UDim2.new(1, -20, 0, 12)
-bountyStatusDot.BackgroundColor3 = AutoBountyEnabled and C.green or C.red
-corner(99, bountyStatusDot)
-
--- Update bounty status display
-task.spawn(function()
-    while true do
-        task.wait(2)
-        if bountyStatusFrame and bountyStatusFrame.Parent then
-            local targets = GetBountyTargets()
-            targetsCountLabel.Text = "Available Targets: " .. #targets
-            if AutoBountyCurrentTarget then
-                currentTargetLabel.Text = "Current Target: " .. (AutoBountyCurrentTarget.Name or "None")
-            else
-                currentTargetLabel.Text = "Current Target: None"
-            end
-            bountyStatusDot.BackgroundColor3 = AutoBountyEnabled and C.green or C.red
-        end
-    end
-end)
-
-addButtonRow("Refresh Target List", bountyPage, 6, function()
-    AutoBountyTargets = GetBountyTargets()
-    addNotification("Bounty Hunt", "Target list refreshed - " .. #AutoBountyTargets .. " targets found", C.accent)
-end)
-
--- ============================================================
---  SETTINGS PAGE (Colors + Security + Config Save/Load)
+--  SETTINGS PAGE (Colors + Security)
 -- ============================================================
 addSectionTitle("Colors", settingsPage, 1)
 
@@ -2688,119 +2195,18 @@ addDropdownRow("Secondary Color", colorNames, settingsPage, 3, function(name)
     addNotification("Colors", "Secondary: " .. name, getPresetColor(name))
 end)
 
-addSectionTitle("Config Management", settingsPage, 4)
+addSectionTitle("Reset", settingsPage, 5)
 
-addButtonRow("Save All Settings", settingsPage, 5, function()
-    SaveAllConfig()
-end)
-
-addButtonRow("Load All Settings", settingsPage, 6, function()
-    LoadAllConfig()
-    -- Refresh UI states after loading
-    if FastAttackEnabled then StartFastAttack() else StopFastAttack() end
-    if ESPEnabled then UpdateESP() end
-    if ESP_SkeletonEnabled then UpdateSkeletonESP() else ClearSkeletonESP() end
-    if AutoBountyEnabled then StartAutoBounty() else StopAutoBounty() end
-    if TeleportEnabled and SelectedPlayer then
-        StartTweenFollow()
-    end
-    if InstaTeleportEnabled and SelectedPlayer then
-        InstaTpConnection = RunService.Stepped:Connect(function()
-            if SelectedPlayer then
-                pcall(function()
-                    local target = Players:FindFirstChild(SelectedPlayer)
-                    if target and target.Character then
-                        LocalPlayer.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(0, YOffset, 0)
-                    end
-                end)
-            end
-        end)
-    end
-    if SpectateEnabled and SelectedPlayer then
-        SpectateConnection = RunService.RenderStepped:Connect(function()
-            if SelectedPlayer then
-                local target = Players:FindFirstChild(SelectedPlayer)
-                if target and target.Character and target.Character:FindFirstChild("Humanoid") then
-                    workspace.CurrentCamera.CameraSubject = target.Character.Humanoid
-                end
-            end
-        end)
-    end
-    if AutoEscapeEnabled then
-        AutoEscapeConn = RunService.Heartbeat:Connect(function(dt)
-            if not AutoEscapeEnabled then return end
-            pcall(function()
-                local char = LocalPlayer.Character
-                if not char then return end
-                local hum = char:FindFirstChild("Humanoid")
-                local hrp = char:FindFirstChild("HumanoidRootPart")
-                if not hum or not hrp then return end
-                local hpPercent = (hum.Health / hum.MaxHealth) * 100
-                if hpPercent <= AutoEscapeThreshold and hum.Health > 0 then
-                    local escapePos = hrp.Position + Vector3.new(0, 450 * dt, 0)
-                    hrp.CFrame = CFrame.new(escapePos)
-                    for _, part in pairs(char:GetDescendants()) do
-                        if part:IsA("BasePart") then part.CanCollide = false end
-                    end
-                end
-            end)
-        end)
-    end
-    addNotification("Config", "All settings loaded", C.accent)
-end)
-
-addSectionTitle("Reset", settingsPage, 7)
-
-addButtonRow("Reset Colors (Default)", settingsPage, 8, function()
+addButtonRow("Reset Colors (Default)", settingsPage, 6, function()
     SavedPrimary = DEFAULT_PRIMARY
     SavedSecondary = DEFAULT_SECONDARY
     ApplyColorChange()
     addNotification("Colors", "Colors restored to default", C.accent)
 end)
 
-addButtonRow("Reset All Settings", settingsPage, 9, function()
-    -- Reset all state variables to default
-    FastAttackEnabled = false
-    StopFastAttack()
-    AimlockEnabled = false
-    u4 = false
-    u19 = nil
-    TeleportEnabled = false
-    InstaTeleportEnabled = false
-    SpectateEnabled = false
-    OrbitEnabled = false
-    AutoEscapeEnabled = false
-    FruitAttackKitsune = false
-    FruitAttackTRex = false
-    AutoAwakening = false
-    ESPEnabled = false
-    ESPDrawingEnabled = false
-    ESP_SkeletonEnabled = false
-    FullBrightEnabled = false
-    iJ = false
-    ncl = false
-    walkWaterEnabled = false
-    sAct = false
-    DashBoostEnabled = false
-    SuperJumpEnabled = false
-    AutoBountyEnabled = false
-    
-    ClearESP()
-    ClearSkeletonESP()
-    StopAutoBounty()
-    if AutoEscapeConn then AutoEscapeConn:Disconnect() end
-    if TeleportConnection then TeleportConnection:Disconnect() end
-    if InstaTpConnection then InstaTpConnection:Disconnect() end
-    if SpectateConnection then SpectateConnection:Disconnect() end
-    if v4Connection then task.cancel(v4Connection) end
-    if tweenNoClipConn then tweenNoClipConn:Disconnect() end
-    
-    addNotification("Config", "All settings reset to default", C.orange)
-end)
+addSectionTitle("Security", settingsPage, 8)
 
-addSectionTitle("Security", settingsPage, 10)
-
-addButtonRow("Activate Anti-Kick", settingsPage, 11, function()
+addButtonRow("Activate Anti-Kick", settingsPage, 9, function()
     pcall(function()
         local OldNamecall
         OldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(Self, ...)
@@ -2821,7 +2227,7 @@ addButtonRow("Activate Anti-Kick", settingsPage, 11, function()
     addNotification("Security", "Anti-Kick activated + Auto Rejoin", C.green)
 end)
 
-addButtonRow("Activate Anti-AFK", settingsPage, 12, function()
+addButtonRow("Activate Anti-AFK", settingsPage, 10, function()
     pcall(function()
         local vu = game:GetService("VirtualUser")
         LocalPlayer.Idled:Connect(function()
@@ -2990,8 +2396,6 @@ end)
 
 closeBtn.MouseButton1Click:Connect(function()
     ESPEnabled = false; ClearESP(); ESPDrawingEnabled = false
-    ClearSkeletonESP()
-    StopAutoBounty()
     if workspace:FindFirstChild("PANELBLOXWater") then workspace.PANELBLOXWater:Destroy() end
     tween(mainFrame, 0.15, {BackgroundTransparency = 1})
     task.wait(0.18); screenGui:Destroy()
@@ -3014,5 +2418,4 @@ end)
 --  INIT
 -- ============================================================
 showPage("Home")
-LoadAllConfig()  -- Auto load saved config
-addNotification("PANELBLOX Premium", "v3.0 loaded successfully (Skeleton ESP + Bounty Hunt + Save Config)", C.accent)
+addNotification("PANELBLOX Premium", "v3.0 loaded successfully", C.accent)
