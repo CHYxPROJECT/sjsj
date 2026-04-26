@@ -1,6 +1,6 @@
--- ============================================================
+ -- ============================================================
 --  PANELBLOX PREMIUM v3.0 -- Blox Fruits
---  GUI Premium with customizable colors (Blue Glow Edition)bokep
+--  GUI Premium with customizable colors (Blue Glow Edition)bokepp
 -- ============================================================
 
 -- [0] SERVICES
@@ -1678,14 +1678,14 @@ local ShowcaseItemId = 786
 local ShowcaseItemName = "Pirate King"
 
 local ShowcaseItems = {
-    {name = "Pirate King",          id = 786},
-    {name = "Le Antigua",           id = 65},
-    {name = "Super Ultra Pain",     id = 478},
-    {name = "Cotton Candy Pain",    id = 478},
-    {name = "YouTuber",             id = 680},
-    {name = "Pink Portal",          id = 458},
-    {name = "Equal to the Heaven",  id = 737},
-    {name = "Dragon Fisica",        id = 254},
+    {name = "Pirate King",          id = },
+    {name = "Le Antigua",           id = },
+    {name = "Super Ultra Pain",     id = },
+    {name = "Cotton Candy Pain",    id = },
+    {name = "YouTuber",             id = },
+    {name = "Pink Portal",          id = },
+    {name = "Equal to the Heaven",  id = },
+    {name = "Dragon Fisica",        id = },
 }
 
 local slotNames = {"Slot 1", "Slot 2", "Slot 3", "Slot 4", "Slot 5", "Slot 6"}
